@@ -21,7 +21,7 @@ def layer(input, weight_shape, bias_shape):
                         initializer=weight_init)
     b = tf.get_variable("b", bias_shape,
                         initializer=bias_init)
-    return tf.nn.relu(tf.matmul(input, W) + b)
+    return tf.nn.relu(tf.matmul(input, W) + b) #activation function
 
 def inference(x):
     with tf.variable_scope("hidden_1"):
@@ -35,18 +35,20 @@ def inference(x):
 
     return output
 
+#Determine errors based on the answer 'y'
 def loss(output, y):
     xentropy = tf.nn.softmax_cross_entropy_with_logits(logits=output, labels=y)
     loss = tf.reduce_mean(xentropy)
     return loss
 
+#Minimize the errors to determine optimized weights and biases
 def training(cost, global_step):
-    tf.summary.scalar("cost", cost)
+    tf.summary.scalar("cost", cost) #for loggin the cost
     optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     train_op = optimizer.minimize(cost, global_step=global_step)
     return train_op
 
-
+#Evaluate the network. "output" and 'y' are test data
 def evaluate(output, y):
     correct_prediction = tf.equal(tf.argmax(output, 1), tf.argmax(y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -83,9 +85,9 @@ if __name__ == '__main__':
 
             sess = tf.Session()
 
+            #write the log to the disk
             summary_writer = tf.summary.FileWriter("mlp_logs/",
                                                 graph_def=sess.graph_def)
-
 
             init_op = tf.global_variables_initializer()
 
