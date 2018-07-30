@@ -20,7 +20,7 @@ with tf.name_scope("hidden"):
     b_1 = tf.Variable(tf.zeros([64]), name="b1")
     h_1 = tf.nn.relu(tf.matmul(x, w_1) + b_1)
 
-    #中間層の重みの分布をログ出力
+    #中間層の重みの分布をログ出力（スカラーではないのでscalarは使えない）
     tf.summary.histogram('w_1',w_1)
 
 #中間層から出力層
@@ -57,6 +57,7 @@ summary_op = tf.summary.merge_all()
 
 with tf.Session() as sess:
 
+    # first argument is a directory.
     summary_writer = tf.summary.FileWriter("logs", sess.graph)
 
     sess.run(init)
